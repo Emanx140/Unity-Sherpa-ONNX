@@ -14,9 +14,10 @@ Unity integration plugin for [sherpa-onnx](https://github.com/k2-fsa/sherpa-onnx
 
 | Feature | Description | Status |
 |---------|-------------|--------|
-| **Text-to-Speech (TTS)** | Offline speech synthesis — VITS, Matcha, Kokoro, Kitten, ZipVoice, Pocket (voice cloning) | ✅ Done |
+| **Text-to-Speech (TTS)** | Offline speech synthesis — VITS, Matcha, Kokoro, Kitten, ZipVoice, Pocket | ✅ Done |
 | **Speech Recognition (ASR)** | Offline and streaming speech-to-text — Zipformer, Paraformer, Whisper, SenseVoice, Moonshine | ✅ Done |
 | **Voice Activity Detection (VAD)** | Speech/silence segmentation for efficient ASR — Silero VAD, TEN-VAD | ✅ Done |
+| **Voice Cloning** | High-level voice cloning API for ZipVoice — `AudioClip` → reference audio adapter, MonoBehaviour surface, sample scene, docs | 📋 Planned |
 | **Keyword Spotting (KWS)** | Lightweight always-on keyword detection from microphone | 📋 Planned |
 | **Speaker ID & Diarization** | Speaker identification by voice, who-spoke-when segmentation | 📋 Planned |
 | **Audio Tools** | Audio tagging, speech enhancement, punctuation restoration, language identification | 📋 Planned |
