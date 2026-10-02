@@ -41,7 +41,7 @@ namespace PonyuDev.SherpaOnnx.Common
 
         public static void EditorLog(string msg)
         {
-            if (EditorEnabled) Debug.Log(msg);
+            if (EditorEnabled) LogWithoutStackTrace(msg);
         }
 
         public static void EditorWarning(string msg)
@@ -59,7 +59,7 @@ namespace PonyuDev.SherpaOnnx.Common
         public static void RuntimeLog(string msg)
         {
             OnRuntimeLog?.Invoke(LogLevel.Log, msg);
-            if (RuntimeEnabled) Debug.Log(msg);
+            if (RuntimeEnabled) LogWithoutStackTrace(msg);
         }
 
         public static void RuntimeWarning(string msg)
@@ -72,6 +72,13 @@ namespace PonyuDev.SherpaOnnx.Common
         {
             OnRuntimeLog?.Invoke(LogLevel.Error, msg);
             if (RuntimeEnabled) Debug.LogError(msg);
+        }
+
+        // Info lines are frequent and self-describing; stack traces
+        // would dominate the log. Warnings and errors keep theirs.
+        private static void LogWithoutStackTrace(string msg)
+        {
+            Debug.LogFormat(LogType.Log, LogOption.NoStacktrace, null, "{0}", msg);
         }
     }
 }
