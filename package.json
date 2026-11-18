@@ -1,9 +1,9 @@
 {
   "name": "com.ponyudev.sherpa-onnx",
   "displayName": "PonyuDev Sherpa-ONNX",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "unity": "2022.3",
-  "description": "Unity integration for sherpa-onnx with editor installer for native libraries and models.",
+  "description": "Unity integration for sherpa-onnx with editor installer for native libraries and models. Maintained fork of Ponyu-dev/Unity-Sherpa-ONNX, updated for sherpa-onnx 2.x.",
   "license": "Apache-2.0",
   "keywords": [
     "sherpa",
@@ -21,10 +21,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Ponyu-dev/Unity-Sherpa-ONNX.git"
+    "url": "https://github.com/Emanx140/Unity-Sherpa-ONNX.git"
   },
-  "documentationUrl": "https://github.com/Ponyu-dev/Unity-Sherpa-ONNX#readme",
-  "changelogUrl": "https://github.com/Ponyu-dev/Unity-Sherpa-ONNX/blob/main/CHANGELOG.md",
+  "documentationUrl": "https://github.com/Emanx140/Unity-Sherpa-ONNX#readme",
+  "changelogUrl": "https://github.com/Emanx140/Unity-Sherpa-ONNX/blob/main/CHANGELOG.md",
   "samples": [
     {
       "displayName": "Sherpa-ONNX Demo",
@@ -34,6 +34,6 @@
   ],
   "dependencies": {
     "com.unity.sharp-zip-lib": "1.4.1",
-    "com.cysharp.unitask": "2.5.10"
+    "com.cysharp.unitask": "2.5.11"
   }
 }

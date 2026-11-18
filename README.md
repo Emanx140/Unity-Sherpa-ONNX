@@ -10,6 +10,10 @@
 
 Unity integration plugin for [sherpa-onnx](https://github.com/k2-fsa/sherpa-onnx) — an open-source speech toolkit powered by ONNX Runtime.
 
+> **Maintained fork.** This is a fork of [Ponyu-dev/Unity-Sherpa-ONNX](https://github.com/Ponyu-dev/Unity-Sherpa-ONNX) by Iurii Ponomarev, kept up to date with current sherpa-onnx releases. It keeps the package name `com.ponyudev.sherpa-onnx` and the same file layout, so it is a drop-in replacement. Changes are listed in [CHANGELOG.md](CHANGELOG.md). Install it from this repository's git URL (see [Option 4](#option-4---git-url)); the installer and OpenUPM entries below still point at the original package.
+>
+> **sherpa-onnx 2.x and espeak-ng:** sherpa-onnx 2.0 removed espeak-ng. VITS/Piper, Matcha, Kokoro and Kitten models that relied on `espeak-ng-data` now need a lexicon file (or phonemes passed in through the generation config); the data dir setting is ignored.
+
 ## 🗺️ Feature Roadmap
 
 | Feature | Description | Status |
@@ -145,8 +149,9 @@ The plugin solves real-world platform issues that are not addressed by sherpa-on
   ```
 - 🔗 Then add **Sherpa-ONNX** the same way:
   ```
-  https://github.com/Ponyu-dev/Unity-Sherpa-ONNX.git
+  https://github.com/Emanx140/Unity-Sherpa-ONNX.git
   ```
+  Pin a release by appending a tag, for example `https://github.com/Emanx140/Unity-Sherpa-ONNX.git#v0.3.0`.
 
 ---
 
@@ -155,14 +160,14 @@ The plugin solves real-world platform issues that are not addressed by sherpa-on
 ![Library Install](Docs/images/library-install.gif)
 
 1. Open **Edit → Project Settings → Sherpa ONNX**
-2. Set the desired sherpa-onnx version (e.g. `1.12.25`)
+2. Set the desired sherpa-onnx version (default `2.0.1`)
 3. Click **Install** for each platform you need
 4. Use **Update All** when you change the version to update all installed libraries at once
 
 📥 Libraries are downloaded from:
 - **Desktop** (Windows, macOS, Linux): [NuGet](https://www.nuget.org/packages?q=org.k2fsa.sherpa.onnx.runtime)
 - **Android / iOS native**: [sherpa-onnx GitHub releases](https://github.com/k2-fsa/sherpa-onnx/releases)
-- **iOS managed DLL**: this repository's [GitHub releases](https://github.com/Ponyu-dev/Unity-Sherpa-ONNX/releases) (see below)
+- **iOS native + managed DLL**: this repository's [GitHub releases](https://github.com/Emanx140/Unity-Sherpa-ONNX/releases) (`sherpa-v<version>`), built by the **iOS libraries** workflow because sherpa-onnx publishes no iOS binaries. Run it from the Actions tab for a new sherpa-onnx version before installing that version for iOS.
 
 ---
 

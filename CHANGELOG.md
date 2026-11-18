@@ -2,6 +2,29 @@
 
 All notable changes to `com.ponyudev.sherpa-onnx` will be documented in this file.
 
+## [0.3.0] - 2026-11-18
+
+First release of the maintained fork ([Emanx140/Unity-Sherpa-ONNX](https://github.com/Emanx140/Unity-Sherpa-ONNX)), updated for sherpa-onnx 2.0.1.
+
+### Changed
+
+- Default sherpa-onnx version is **2.0.1** (was 1.13.0).
+- `VadSegment.StartSample` is `long`, matching sherpa-onnx 2.0's 64-bit `SpeechSegment.Start`. A 32-bit index overflows after about 37 hours of audio at 16 kHz, which long-running VAD streams reach. `StartTime` is computed in double precision.
+- iOS libraries are downloaded from this fork's releases (`sherpa-v<version>`), built by the new **iOS libraries** GitHub Actions workflow on macOS with the existing `Tools~/ios` scripts.
+- UniTask dependency is 2.5.11: 2.5.10 fails to compile on Unity 6000.2+ (`TreeViewItem` is obsolete). Upstream issue #29.
+- Package repository, documentation and changelog URLs point at the fork.
+- Info-level log messages are written without stack traces; warnings and errors keep them.
+
+### Added
+
+- `SherpaNativeLibraries`: on Windows, loads the bundled `onnxruntime.dll` and `sherpa-onnx-c-api.dll` by full path before anything else, so Windows does not resolve the older Windows ML `onnxruntime.dll` from System32 and crash on the first model. Reports the reason through `Problem` / `ThrowIfUnavailable()` when another copy is already loaded or a file is missing.
+- Kitten TTS profiles have a `kittenLexicon` field (added to sherpa-onnx's Kitten config in 2.0), filled automatically on import and shown in the profile editor.
+
+### Fixed
+
+- TAR extraction kept only the first 100 characters of long file names, so models such as `sherpa-onnx-streaming-zipformer-ar_en_id_ja_ru_th_vi_zh-2025-02-10` lost their file extensions and auto-configuration failed. GNU long-name (`L`) and PAX (`x`) entries are now applied, and the ustar name prefix is read only from POSIX archives. Upstream issue #30.
+- Native crash (`SIGSEGV` in `SherpaOnnxOfflineTtsSampleRate`) when a TTS profile fails to load, for example while switching profiles on Android. The engine read the sample rate of an instance whose native handle was NULL; it now checks the handle first, as the ASR and VAD engines already do, and reports the failure. Upstream issue #27.
+
 ## [0.2.0] - 2026-05-10
 
 Runtime API surface revamp, on-disk profile management overhaul, and a unified sample scene. Driven by the items Android testing surfaced during the cycle.
