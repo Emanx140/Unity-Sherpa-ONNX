@@ -1,6 +1,7 @@
 #if SHERPA_ONNX
 using System;
 using System.Collections.Concurrent;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -712,7 +713,7 @@ namespace PonyuDev.SherpaOnnx.Tts.Engine
         // ── Instance creation ──
 
         /// <summary>
-        /// Creates a native OfflineTts and validates it via SampleRate access.
+        /// Creates a native OfflineTts and checks its native handle.
         /// Returns null if creation fails (invalid config, missing model, etc.).
         /// Uses <see cref="NativeLocaleGuard"/> to force C locale — required
         /// on Android where system locale may use comma as decimal separator,
@@ -728,9 +729,22 @@ namespace PonyuDev.SherpaOnnx.Tts.Engine
                     tts = new OfflineTts(config);
                 }
 
-                // Validate: accessing SampleRate will crash if the native
-                // handle is null (e.g. invalid config). Catch that here.
-                _ = tts.SampleRate;
+                // The native constructor returns a NULL handle when the
+                // config is invalid or a model file is missing. Any call on
+                // it, including SampleRate, dereferences NULL in native code:
+                // a SIGSEGV that try/catch cannot catch (upstream issue #27,
+                // crash in SherpaOnnxOfflineTtsSampleRate on profile switch).
+                // Check the handle itself and never touch a NULL instance.
+                if (!IsNativeHandleValid(tts))
+                {
+                    SherpaOnnxLog.RuntimeError(
+                        "[SherpaOnnx] OfflineTts created with null native " +
+                        "handle. Model files may be missing or the config " +
+                        "is invalid.");
+                    GC.SuppressFinalize(tts);
+                    return null;
+                }
+
                 return tts;
             }
             catch (Exception ex)
@@ -742,6 +756,40 @@ namespace PonyuDev.SherpaOnnx.Tts.Engine
         }
 
         // ── Private helpers ──
+
+        private static readonly FieldInfo s_ttsHandleField =
+            typeof(OfflineTts).GetField("_handle", BindingFlags.NonPublic | BindingFlags.Instance);
+
+        /// <summary>
+        /// Checks the private native handle of an <see cref="OfflineTts"/>
+        /// (reflection: the field is private in the sherpa-onnx managed DLL).
+        /// Same approach as the ASR and VAD engines.
+        /// </summary>
+        private static bool IsNativeHandleValid(OfflineTts tts)
+        {
+            if (tts == null)
+                return false;
+
+            if (s_ttsHandleField == null)
+            {
+                SherpaOnnxLog.RuntimeWarning(
+                    "[SherpaOnnx] Cannot find _handle field in OfflineTts — " +
+                    "skipping null check.");
+                return true;
+            }
+
+            try
+            {
+                var handleRef = (HandleRef)s_ttsHandleField.GetValue(tts);
+                return handleRef.Handle != IntPtr.Zero;
+            }
+            catch (Exception ex)
+            {
+                SherpaOnnxLog.RuntimeWarning(
+                    "[SherpaOnnx] OfflineTts handle check failed: " + ex.Message);
+                return true;
+            }
+        }
 
         private bool ValidateBeforeGenerate(string text)
         {
