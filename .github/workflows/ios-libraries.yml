@@ -19,6 +19,14 @@ on:
         description: "Publish the zip as release sherpa-v<version>"
         type: boolean
         default: true
+      runner:
+        description: "macOS runner image (the iOS build cross-compiles, so Intel works when arm64 runners are busy)"
+        type: choice
+        options:
+          - macos-15-intel
+          - macos-15
+          - macos-14
+        default: macos-15-intel
 
 permissions:
   contents: write
@@ -29,7 +37,7 @@ concurrency:
 
 jobs:
   build:
-    runs-on: macos-15
+    runs-on: ${{ inputs.runner }}
     timeout-minutes: 240
     env:
       SHERPA_DIR: ${{ github.workspace }}/../sherpa-onnx
