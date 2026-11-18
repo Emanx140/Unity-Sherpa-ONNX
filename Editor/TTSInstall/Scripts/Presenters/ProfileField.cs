@@ -55,6 +55,7 @@ namespace PonyuDev.SherpaOnnx.Editor.TtsInstall.Presenters
         KittenVoices,
         KittenTokens,
         KittenDataDir,
+        KittenLexicon,
         KittenLengthScale,
 
         // ZipVoice

@@ -149,13 +149,14 @@ namespace PonyuDev.SherpaOnnx.Tts.Config
             c.Voices = R(dir, p.kittenVoices);
             c.Tokens = R(dir, p.kittenTokens);
             c.DataDir = R(dir, p.kittenDataDir);
+            c.Lexicon = R(dir, p.kittenLexicon);
             c.LengthScale = p.kittenLengthScale;
 
             SherpaOnnxLog.RuntimeLog(
                 $"[SherpaOnnx] Kitten config: " +
                 $"Model='{c.Model}', Voices='{c.Voices}', " +
                 $"Tokens='{c.Tokens}', DataDir='{c.DataDir}', " +
-                $"LengthScale={c.LengthScale}");
+                $"Lexicon='{c.Lexicon}', LengthScale={c.LengthScale}");
         }
 
         private static void BuildZipVoice(

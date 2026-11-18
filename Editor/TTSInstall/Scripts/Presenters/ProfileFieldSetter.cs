@@ -43,6 +43,7 @@ namespace PonyuDev.SherpaOnnx.Editor.TtsInstall.Presenters
                 case ProfileField.KittenVoices: p.kittenVoices = v; break;
                 case ProfileField.KittenTokens: p.kittenTokens = v; break;
                 case ProfileField.KittenDataDir: p.kittenDataDir = v; break;
+                case ProfileField.KittenLexicon: p.kittenLexicon = v; break;
 
                 case ProfileField.ZipVoiceTokens: p.zipVoiceTokens = v; break;
                 case ProfileField.ZipVoiceEncoder: p.zipVoiceEncoder = v; break;

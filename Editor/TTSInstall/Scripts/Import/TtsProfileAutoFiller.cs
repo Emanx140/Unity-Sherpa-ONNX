@@ -88,6 +88,7 @@ namespace PonyuDev.SherpaOnnx.Editor.TtsInstall.Import
             profile.kittenVoices = ModelFileScanner.FindFileByPattern(dir, "*voices*.bin");
             profile.kittenTokens = ModelFileScanner.FindFileByPattern(dir, "*tokens*.txt");
             profile.kittenDataDir = ModelFileScanner.FindSubDir(dir, "espeak-ng-data");
+            profile.kittenLexicon = ModelFileScanner.FindAllLexicons(dir, profile.kittenModel);
             profile.kittenLengthScale = 1.0f;
         }
 

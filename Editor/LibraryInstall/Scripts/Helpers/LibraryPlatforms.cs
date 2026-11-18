@@ -135,13 +135,13 @@ namespace PonyuDev.SherpaOnnx.Editor.LibraryInstall.Helpers
             new LibraryPlatform
             {
                 PlatformName = "iOS",
-                SourceUrl = "https://github.com/Ponyu-dev/Unity-Sherpa-ONNX/releases",
+                SourceUrl = "https://github.com/Emanx140/Unity-Sherpa-ONNX/releases",
                 Arches = new List<LibraryArch>()
                 {
                     new()
                     {
                         Name = "iOS",
-                        Url = "https://github.com/Ponyu-dev/Unity-Sherpa-ONNX/releases/download/sherpa-v{0}/sherpa-onnx-ios.zip",
+                        Url = "https://github.com/Emanx140/Unity-Sherpa-ONNX/releases/download/sherpa-v{0}/sherpa-onnx-ios.zip",
                         RootPath = "",
                         IsManagedDllRoot = false,
                         Platform = PlatformType.iOS,

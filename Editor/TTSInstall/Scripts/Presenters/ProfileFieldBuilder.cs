@@ -63,6 +63,7 @@ namespace PonyuDev.SherpaOnnx.Editor.TtsInstall.Presenters
             root.Add(b.BindFile("Voices", b.Profile.kittenVoices, ProfileField.KittenVoices, "bin", "voices", isRequired: true));
             root.Add(b.BindFile("Tokens", b.Profile.kittenTokens, ProfileField.KittenTokens, "txt", "tokens", isRequired: true));
             root.Add(b.BindFolder("Data dir", b.Profile.kittenDataDir, ProfileField.KittenDataDir, "espeak-ng-data"));
+            root.Add(b.BindFile("Lexicon", b.Profile.kittenLexicon, ProfileField.KittenLexicon, "txt", "lexicon"));
             root.Add(b.BindFloat("Length scale", b.Profile.kittenLengthScale, ProfileField.KittenLengthScale));
         }
 

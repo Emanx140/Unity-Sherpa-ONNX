@@ -97,6 +97,8 @@ namespace PonyuDev.SherpaOnnx.Tts.Data
         public string kittenVoices = "";
         public string kittenTokens = "";
         public string kittenDataDir = "";
+        /// <summary>Lexicon file. Needed for Kitten on sherpa-onnx 2.x, which no longer uses espeak-ng-data.</summary>
+        public string kittenLexicon = "";
         public float kittenLengthScale = 1.0f;
 
         // ── ZipVoice ──
