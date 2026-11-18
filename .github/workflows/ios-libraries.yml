@@ -1,0 +1,74 @@
+name: iOS libraries
+
+# Builds the iOS artifacts the package installer downloads for a sherpa-onnx
+# version (sherpa-onnx publishes no iOS binaries) and publishes them as the
+# release "sherpa-v<version>" with asset sherpa-onnx-ios.zip:
+#   sherpa-onnx.dll          managed C# with DllImport("__Internal")
+#   sherpa-onnx.xcframework  static library, kiss_fft symbols prefixed for Unity
+#   onnxruntime.xcframework  static ONNX Runtime from the sherpa-onnx iOS build
+# The build is Tools~/ios/build_ios.sh, unchanged from the local workflow.
+
+on:
+  workflow_dispatch:
+    inputs:
+      sherpa_version:
+        description: "sherpa-onnx version, without the leading v (for example 2.0.1)"
+        required: true
+        default: "2.0.1"
+      publish:
+        description: "Publish the zip as release sherpa-v<version>"
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ios-libraries-${{ inputs.sherpa_version }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: macos-15
+    timeout-minutes: 240
+    env:
+      SHERPA_DIR: ${{ github.workspace }}/../sherpa-onnx
+    steps:
+      - name: Check out package
+        uses: actions/checkout@v4
+
+      - name: Check out sherpa-onnx v${{ inputs.sherpa_version }}
+        run: |
+          git clone --depth 1 --branch "v${{ inputs.sherpa_version }}" \
+            https://github.com/k2-fsa/sherpa-onnx.git "$SHERPA_DIR"
+          grep -q "SHERPA_ONNX_VERSION \"${{ inputs.sherpa_version }}\"" "$SHERPA_DIR/CMakeLists.txt"
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Show toolchain
+        run: |
+          xcodebuild -version
+          cmake --version
+          dotnet --version
+
+      - name: Build iOS artifacts
+        run: bash "Tools~/ios/build_ios.sh" "$SHERPA_DIR"
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sherpa-onnx-ios-${{ inputs.sherpa_version }}
+          path: Tools~/output/sherpa-onnx-ios.zip
+          if-no-files-found: error
+
+      - name: Publish release sherpa-v${{ inputs.sherpa_version }}
+        if: ${{ inputs.publish }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          bash "Tools~/ios/publish_release.sh" "$SHERPA_DIR"
