@@ -40,6 +40,7 @@ namespace PonyuDev.SherpaOnnx.Common.Extractors
                 await using (var gz = new GZipStream(file, CompressionMode.Decompress))
                 {
                     byte[] header = new byte[TarUtils.BlockSize];
+                    string pendingLongName = null;
 
                     while (true)
                     {
@@ -56,6 +57,32 @@ namespace PonyuDev.SherpaOnnx.Common.Extractors
                             break;
 
                         TarHeader tarHeader = TarHeader.Parse(header);
+
+                        // Names over 100 characters arrive in a metadata
+                        // entry before the real header.
+                        if (tarHeader.IsGnuLongName)
+                        {
+                            pendingLongName = TarUtils.ReadGnuLongName(TarUtils.ReadEntryData(gz, tarHeader.Size));
+                            continue;
+                        }
+
+                        if (tarHeader.IsPaxHeader)
+                        {
+                            pendingLongName = TarUtils.ReadPaxPath(TarUtils.ReadEntryData(gz, tarHeader.Size)) ?? pendingLongName;
+                            continue;
+                        }
+
+                        if (tarHeader.IsIgnoredMetadata)
+                        {
+                            TarUtils.ReadEntryData(gz, tarHeader.Size);
+                            continue;
+                        }
+
+                        if (!string.IsNullOrEmpty(pendingLongName))
+                        {
+                            tarHeader = tarHeader.WithName(pendingLongName);
+                            pendingLongName = null;
+                        }
 
                         if (string.IsNullOrEmpty(tarHeader.Name))
                             throw new InvalidDataException("Tar entry has empty name.");

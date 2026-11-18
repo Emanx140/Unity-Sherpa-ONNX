@@ -69,6 +69,7 @@ namespace PonyuDev.SherpaOnnx.Common.Extractors
                     // arrive for tens of seconds while BZ2 fills its
                     // first decompression block.
                     ticker.EmitInitial();
+                    string pendingLongName = null;
 
                     while (true)
                     {
@@ -85,6 +86,32 @@ namespace PonyuDev.SherpaOnnx.Common.Extractors
                             break;
 
                         TarHeader tarHeader = TarHeader.Parse(header);
+
+                        // Names over 100 characters arrive in a metadata
+                        // entry before the real header.
+                        if (tarHeader.IsGnuLongName)
+                        {
+                            pendingLongName = TarUtils.ReadGnuLongName(TarUtils.ReadEntryData(bz2, tarHeader.Size));
+                            continue;
+                        }
+
+                        if (tarHeader.IsPaxHeader)
+                        {
+                            pendingLongName = TarUtils.ReadPaxPath(TarUtils.ReadEntryData(bz2, tarHeader.Size)) ?? pendingLongName;
+                            continue;
+                        }
+
+                        if (tarHeader.IsIgnoredMetadata)
+                        {
+                            TarUtils.ReadEntryData(bz2, tarHeader.Size);
+                            continue;
+                        }
+
+                        if (!string.IsNullOrEmpty(pendingLongName))
+                        {
+                            tarHeader = tarHeader.WithName(pendingLongName);
+                            pendingLongName = null;
+                        }
 
                         if (string.IsNullOrEmpty(tarHeader.Name))
                             throw new InvalidDataException("Tar entry has empty name.");
